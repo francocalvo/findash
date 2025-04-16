@@ -92,6 +92,85 @@ class ItemsPublic(SQLModel):
     count: int
 
 
+# Income model
+class IncomeBase(SQLModel):
+    date: str
+    account: str
+    origin: str
+    payee: str
+    narration: str
+    amount_ars: float
+    amount_usd: float
+
+
+class IncomeCreate(IncomeBase):
+    pass
+
+
+class IncomeUpdate(IncomeBase):
+    date: str | None = None
+    account: str | None = None
+    origin: str | None = None
+    payee: str | None = None
+    narration: str | None = None
+    amount_ars: float | None = None
+    amount_usd: float | None = None
+
+
+class Income(IncomeBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+
+class IncomePublic(IncomeBase):
+    id: uuid.UUID
+
+
+class IncomesPublic(SQLModel):
+    data: list[IncomePublic]
+    count: int
+
+
+# Expense model
+class ExpenseBase(SQLModel):
+    date: str
+    account: str
+    category: str
+    subcategory: str
+    payee: str
+    narration: str
+    amount_ars: float
+    amount_usd: float
+    tags: str | None = None
+
+
+class ExpenseCreate(ExpenseBase):
+    pass
+
+
+class ExpenseUpdate(ExpenseBase):
+    date: str | None = None
+    account: str | None = None
+    category: str | None = None
+    subcategory: str | None = None
+    payee: str | None = None
+    narration: str | None = None
+    amount_ars: float | None = None
+    amount_usd: float | None = None
+    tags: str | None = None
+
+
+class Expense(ExpenseBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+
+class ExpensePublic(ExpenseBase):
+    id: uuid.UUID
+
+
+class ExpensesPublic(SQLModel):
+    data: list[ExpensePublic]
+    count: int
+
 # Generic message
 class Message(SQLModel):
     message: str
