@@ -1,7 +1,11 @@
+from ast import Tuple
 from typing import Any, Type, List
 from sqlmodel import Session
 from app.ledger import Ledger
 from app.models import Expense, Income
+import logging
+
+logger = logging.getLogger(__name__)
 
 class BeancountSyncService:
     def __init__(self, ledger: Ledger, db_session: Session):
@@ -10,17 +14,23 @@ class BeancountSyncService:
 
     def _run_query_and_map(self, query: str, model_cls: Type) -> List[Any]:
         """Execute Beancount query and map results to SQLModel instances."""
-        types, rows = self.ledger.run_query(query)
+        res: Tuple[List[Tuple[str, type]], List[tuple]] = self.ledger.run_query(query)
+        types, rows = res
+
+        col_names = [col[0] for col in types]
+        logger.info(f"Loaded {len(rows)} rows. Columns: {col_names}")
+
         mapped = []
         for row in rows:
             row_dict = {}
-            for column_name, _ in types:
-                value = getattr(row, column_name)
+            for idx, value in enumerate(row):
+                column_name = col_names[idx]
                 if isinstance(value, (set, frozenset)):
                     row_dict[column_name] = ",".join(sorted(value))
                 else:
                     row_dict[column_name] = value
             mapped.append(model_cls(**row_dict))
+        logger.info(f"Mapped {len(mapped)} rows.")
         return mapped
 
     def sync_table(self, query: str, model_cls: Type) -> None:

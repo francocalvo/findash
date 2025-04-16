@@ -97,7 +97,7 @@ class IncomeBase(SQLModel):
     date: str
     account: str
     origin: str
-    payee: str
+    payee: str | None = None
     narration: str
     amount_ars: float
     amount_usd: float
@@ -107,19 +107,8 @@ class IncomeCreate(IncomeBase):
     pass
 
 
-class IncomeUpdate(IncomeBase):
-    date: str | None = None
-    account: str | None = None
-    origin: str | None = None
-    payee: str | None = None
-    narration: str | None = None
-    amount_ars: float | None = None
-    amount_usd: float | None = None
-
-
 class Income(IncomeBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-
 
 class IncomePublic(IncomeBase):
     id: uuid.UUID
@@ -136,7 +125,7 @@ class ExpenseBase(SQLModel):
     account: str
     category: str
     subcategory: str
-    payee: str
+    payee: str | None = None
     narration: str
     amount_ars: float
     amount_usd: float
@@ -145,18 +134,6 @@ class ExpenseBase(SQLModel):
 
 class ExpenseCreate(ExpenseBase):
     pass
-
-
-class ExpenseUpdate(ExpenseBase):
-    date: str | None = None
-    account: str | None = None
-    category: str | None = None
-    subcategory: str | None = None
-    payee: str | None = None
-    narration: str | None = None
-    amount_ars: float | None = None
-    amount_usd: float | None = None
-    tags: str | None = None
 
 
 class Expense(ExpenseBase, table=True):

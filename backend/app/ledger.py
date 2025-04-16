@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple
 
 from beancount.core.data import Directive
 from beancount.loader import LoadError, load_file
-from beancount.query.query import run_query
+from beanquery.query import run_query
 
 class Ledger:
     """
