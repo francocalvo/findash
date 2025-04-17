@@ -92,61 +92,82 @@ class ItemsPublic(SQLModel):
     count: int
 
 
-# Income model
-class IncomeBase(SQLModel):
-    date: str
-    account: str
-    origin: str
+# Base Transaction model
+class TransactionBase(SQLModel):
+    """Base model for all financial transactions."""
+    date: str = Field(index=True)
+    account: str = Field(index=True)
     payee: str | None = None
     narration: str
     amount_ars: float
     amount_usd: float
 
+    class Config:
+        from_attributes = True
+
+
+class Transaction(TransactionBase, table=True):
+    """Base table model for all financial transactions."""
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    type: str = Field(index=True)  # 'income' or 'expense'
+
+
+# Income model
+class IncomeBase(TransactionBase):
+    """Base model for income transactions."""
+    origin: str = Field(index=True)
+
 
 class IncomeCreate(IncomeBase):
+    """Model for creating income transactions."""
     pass
 
 
 class Income(IncomeBase, table=True):
+    """Database model for income transactions."""
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
+
 class IncomePublic(IncomeBase):
+    """Public model for income transactions."""
     id: uuid.UUID
 
 
 class IncomesPublic(SQLModel):
+    """Response model for paginated income transactions."""
     data: list[IncomePublic]
     count: int
+    pagination: dict[str, int] | None = None
 
 
 # Expense model
-class ExpenseBase(SQLModel):
-    date: str
-    account: str
-    category: str
-    subcategory: str
-    payee: str | None = None
-    narration: str
-    amount_ars: float
-    amount_usd: float
-    tags: str | None = None
+class ExpenseBase(TransactionBase):
+    """Base model for expense transactions."""
+    category: str = Field(index=True)
+    subcategory: str = Field(index=True)
+    tags: str | None = Field(default=None, index=True)
 
 
 class ExpenseCreate(ExpenseBase):
+    """Model for creating expense transactions."""
     pass
 
 
 class Expense(ExpenseBase, table=True):
+    """Database model for expense transactions."""
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 
 class ExpensePublic(ExpenseBase):
+    """Public model for expense transactions."""
     id: uuid.UUID
 
 
 class ExpensesPublic(SQLModel):
+    """Response model for paginated expense transactions."""
     data: list[ExpensePublic]
     count: int
+    pagination: dict[str, int] | None = None
 
 # Generic message
 class Message(SQLModel):
