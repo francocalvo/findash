@@ -10,8 +10,8 @@ from app.api.main import api_router
 from app.core.config import settings
 from app.core.db import engine, init_db
 from app.ledger import Ledger
-from app.service.beancount.handlers import LedgerWatcher
-from app.service.beancount.sync import BeancountSyncService
+from app.services.beancount.handlers import LedgerWatcher
+from app.services.beancount.sync import BeancountSyncService
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:

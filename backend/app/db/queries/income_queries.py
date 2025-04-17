@@ -16,10 +16,10 @@ def build_income_query(
     """Build a query for filtering income."""
     query = select(Income)
 
-    # Apply date filters
+    # Apply date filters (from_date inclusive, to_date exclusive)
     query = query.where(Income.date >= from_date.isoformat())
     if to_date:
-        query = query.where(Income.date <= to_date.isoformat())
+        query = query.where(Income.date < to_date.isoformat())
 
     # Apply origin filter
     if origin:
@@ -35,17 +35,21 @@ def build_income_aggregation_query(
     if group_by == "origin":
         query = select(
             Income.origin,
-            func.sum(Income.amount_ars).label("total_ars"),
+            func.sum(Income.amount_ars).label("amount_ars"),
+            func.sum(Income.amount_usd).label("amount_usd"),
+            func.sum(Income.amount_cars).label("amount_cars"),
         ).group_by(Income.origin)
     else:  # group by month
         query = select(
             func.date_trunc("month", Income.date).label("month"),
-            func.sum(Income.amount_ars).label("total_ars"),
+            func.sum(Income.amount_ars).label("amount_ars"),
+            func.sum(Income.amount_usd).label("amount_usd"),
+            func.sum(Income.amount_cars).label("amount_cars"),
         ).group_by("month")
 
-    # Apply date filters
+    # Apply date filters (from_date inclusive, to_date exclusive)
     query = query.where(Income.date >= from_date.isoformat())
     if to_date:
-        query = query.where(Income.date <= to_date.isoformat())
+        query = query.where(Income.date < to_date.isoformat())
 
     return query

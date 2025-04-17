@@ -1,7 +1,6 @@
 """Expense-related routes."""
 
 from datetime import date, datetime
-from typing import Any
 
 from fastapi import APIRouter, Query
 from sqlmodel import func, select
@@ -11,8 +10,7 @@ from app.db.queries.expense_queries import (
     build_expense_aggregation_query,
     build_expense_query,
 )
-from app.models import ExpensesPublic
-from app.services.currency import currency_service
+from app.models import ExpensePublic, ExpensesPublic
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -26,7 +24,7 @@ def get_expenses(
     category: str | None = Query(None, description="Filter by category"),
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(50, ge=1, le=100, description="Number of records to return"),
-) -> Any:
+) -> ExpensesPublic:
     """Retrieve expenses with filtering and pagination."""
     # Build base query
     query = build_expense_query(
@@ -43,11 +41,17 @@ def get_expenses(
     # Execute query
     expenses = session.exec(query).all()
 
-    # Convert currencies if needed
-    if set(currencies) != {"ARS"}:
-        expenses_data = currency_service.convert_transactions(expenses, currencies)
-    else:
-        expenses_data = [expense.model_dump() for expense in expenses]
+    # Filter currencies in response
+    expenses_data = []
+    for expense in expenses:
+        expense_dict = expense.model_dump()
+        filtered_expense = {
+            k: v
+            for k, v in expense_dict.items()
+            if not k.startswith("amount_")
+            or any(k == f"amount_{curr.lower()}" for curr in currencies)
+        }
+        expenses_data.append(ExpensePublic(**filtered_expense))
 
     return ExpensesPublic(
         data=expenses_data,
@@ -80,13 +84,14 @@ def get_expense_summary(
     for r in results:
         item = {group_by: r[0], "amount_ars": float(r[1] or 0)}
 
-        # Add converted amounts
-        for currency in currencies:
-            if currency != "ARS" and currency in ["USD", "cARS"]:
-                item[f"amount_{currency.lower()}"] = currency_service.convert_amount(
-                    item["amount_ars"], "ARS", currency
-                )
-        data.append(item)
+        # Filter currencies
+        filtered_item = {
+            k: v
+            for k, v in item.items()
+            if not k.startswith("amount_")
+            or any(k == f"amount_{curr.lower()}" for curr in currencies)
+        }
+        data.append(filtered_item)
 
     return {
         "data": data,

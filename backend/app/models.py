@@ -101,6 +101,7 @@ class TransactionBase(SQLModel):
     narration: str
     amount_ars: float
     amount_usd: float
+    amount_cars: float
 
     class Config:
         from_attributes = True
