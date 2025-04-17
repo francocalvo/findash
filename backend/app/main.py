@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
+from fastapi_mcp import FastApiMCP
 from sqlmodel import Session
 from starlette.middleware.cors import CORSMiddleware
 
@@ -62,3 +63,6 @@ if settings.all_cors_origins:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+mcp = FastApiMCP(app, name=settings.PROJECT_NAME)
+mcp.mount()
