@@ -55,6 +55,7 @@ class BeancountSyncService:
             narration AS narration,
             NUMBER(CONVERT(POSITION, 'ARS', DATE)) AS amount_ars,
             NUMBER(CONVERT(POSITION, 'USD', DATE)) AS amount_usd,
+            NUMBER(CONVERT(POSITION, 'CARS', DATE)) AS amount_cars,
             tags
         WHERE account ~ '^Expenses'
         ORDER BY date DESC
@@ -71,7 +72,8 @@ class BeancountSyncService:
             payee AS payee,
             narration AS narration,
             NUMBER(CONVERT(ABS(POSITION), 'ARS', DATE)) AS amount_ars,
-            NUMBER(CONVERT(ABS(POSITION), 'USD', DATE)) AS amount_usd
+            NUMBER(CONVERT(ABS(POSITION), 'USD', DATE)) AS amount_usd,
+            NUMBER(CONVERT(ABS(POSITION), 'CARS', DATE)) AS amount_cars
         WHERE account ~ '^Income'
         ORDER BY date DESC
         """

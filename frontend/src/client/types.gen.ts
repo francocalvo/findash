@@ -9,8 +9,62 @@ export type Body_login_login_access_token = {
   client_secret?: string | null
 }
 
+/**
+ * Public model for expense transactions.
+ */
+export type ExpensePublic = {
+  date: string
+  account: string
+  payee?: string | null
+  narration: string
+  amount_ars: number
+  amount_usd: number
+  amount_cars: number
+  category: string
+  subcategory: string
+  tags?: string | null
+  id: string
+}
+
+/**
+ * Response model for paginated expense transactions.
+ */
+export type ExpensesPublic = {
+  data: Array<ExpensePublic>
+  count: number
+  pagination?: {
+    [key: string]: number
+  } | null
+}
+
 export type HTTPValidationError = {
   detail?: Array<ValidationError>
+}
+
+/**
+ * Public model for income transactions.
+ */
+export type IncomePublic = {
+  date: string
+  account: string
+  payee?: string | null
+  narration: string
+  amount_ars: number
+  amount_usd: number
+  amount_cars: number
+  origin: string
+  id: string
+}
+
+/**
+ * Response model for paginated income transactions.
+ */
+export type IncomesPublic = {
+  data: Array<IncomePublic>
+  count: number
+  pagination?: {
+    [key: string]: number
+  } | null
 }
 
 export type ItemCreate = {
@@ -42,6 +96,13 @@ export type Message = {
 export type NewPassword = {
   token: string
   new_password: string
+}
+
+export type PrivateUserCreate = {
+  email: string
+  password: string
+  full_name: string
+  is_verified?: boolean
 }
 
 export type Token = {
@@ -98,6 +159,129 @@ export type ValidationError = {
   loc: Array<string | number>
   msg: string
   type: string
+}
+
+export type AnalyticsGetCombinedMetricsData = {
+  /**
+   * Currencies to include in response
+   */
+  currencies?: Array<string>
+  /**
+   * Start date (YYYY-MM-DD)
+   */
+  fromDate: string
+  /**
+   * End date (YYYY-MM-DD)
+   */
+  toDate?: string | null
+}
+
+export type AnalyticsGetCombinedMetricsResponse = {
+  [key: string]: unknown
+}
+
+export type ExpensesGetExpensesData = {
+  /**
+   * Filter by category
+   */
+  category?: string | null
+  /**
+   * Currencies to convert to
+   */
+  currencies?: Array<string>
+  /**
+   * Start date (YYYY-MM-DD)
+   */
+  fromDate: string
+  /**
+   * Number of records to return
+   */
+  limit?: number
+  /**
+   * Number of records to skip
+   */
+  skip?: number
+  /**
+   * End date (YYYY-MM-DD)
+   */
+  toDate?: string | null
+}
+
+export type ExpensesGetExpensesResponse = ExpensesPublic
+
+export type ExpensesGetExpenseSummaryData = {
+  /**
+   * Currencies to convert to
+   */
+  currencies?: Array<string>
+  /**
+   * Start date (YYYY-MM-DD)
+   */
+  fromDate: string
+  /**
+   * Group by 'category' or 'month'
+   */
+  groupBy?: string
+  /**
+   * End date (YYYY-MM-DD)
+   */
+  toDate?: string | null
+}
+
+export type ExpensesGetExpenseSummaryResponse = {
+  [key: string]: unknown
+}
+
+export type IncomeGetIncomesData = {
+  /**
+   * Currencies to convert to
+   */
+  currencies?: Array<string>
+  /**
+   * Start date (YYYY-MM-DD)
+   */
+  fromDate: string
+  /**
+   * Number of records to return
+   */
+  limit?: number
+  /**
+   * Filter by origin
+   */
+  origin?: string | null
+  /**
+   * Number of records to skip
+   */
+  skip?: number
+  /**
+   * End date (YYYY-MM-DD)
+   */
+  toDate?: string | null
+}
+
+export type IncomeGetIncomesResponse = IncomesPublic
+
+export type IncomeGetIncomeSummaryData = {
+  /**
+   * Currencies to convert to
+   */
+  currencies?: Array<string>
+  /**
+   * Start date (YYYY-MM-DD)
+   */
+  fromDate: string
+  /**
+   * Group by 'origin' or 'month'
+   */
+  groupBy?: string
+  /**
+   * End date (YYYY-MM-DD)
+   */
+  toDate?: string | null
+}
+
+export type IncomeGetIncomeSummaryResponse = {
+  [key: string]: unknown
 }
 
 export type ItemsReadItemsData = {
@@ -157,6 +341,12 @@ export type LoginRecoverPasswordHtmlContentData = {
 }
 
 export type LoginRecoverPasswordHtmlContentResponse = string
+
+export type PrivateCreateUserData = {
+  requestBody: PrivateUserCreate
+}
+
+export type PrivateCreateUserResponse = UserPublic
 
 export type UsersReadUsersData = {
   limit?: number

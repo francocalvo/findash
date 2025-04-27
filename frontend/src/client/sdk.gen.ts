@@ -4,6 +4,16 @@ import type { CancelablePromise } from "./core/CancelablePromise"
 import { OpenAPI } from "./core/OpenAPI"
 import { request as __request } from "./core/request"
 import type {
+  AnalyticsGetCombinedMetricsData,
+  AnalyticsGetCombinedMetricsResponse,
+  ExpensesGetExpensesData,
+  ExpensesGetExpensesResponse,
+  ExpensesGetExpenseSummaryData,
+  ExpensesGetExpenseSummaryResponse,
+  IncomeGetIncomesData,
+  IncomeGetIncomesResponse,
+  IncomeGetIncomeSummaryData,
+  IncomeGetIncomeSummaryResponse,
   ItemsReadItemsData,
   ItemsReadItemsResponse,
   ItemsCreateItemData,
@@ -23,6 +33,8 @@ import type {
   LoginResetPasswordResponse,
   LoginRecoverPasswordHtmlContentData,
   LoginRecoverPasswordHtmlContentResponse,
+  PrivateCreateUserData,
+  PrivateCreateUserResponse,
   UsersReadUsersData,
   UsersReadUsersResponse,
   UsersCreateUserData,
@@ -45,6 +57,163 @@ import type {
   UtilsTestEmailResponse,
   UtilsHealthCheckResponse,
 } from "./types.gen"
+
+export class AnalyticsService {
+  /**
+   * Get Combined Metrics
+   * Get combined income and expense metrics for a period.
+   * @param data The data for the request.
+   * @param data.fromDate Start date (YYYY-MM-DD)
+   * @param data.toDate End date (YYYY-MM-DD)
+   * @param data.currencies Currencies to include in response
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getCombinedMetrics(
+    data: AnalyticsGetCombinedMetricsData,
+  ): CancelablePromise<AnalyticsGetCombinedMetricsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/analytics/combined",
+      query: {
+        from_date: data.fromDate,
+        to_date: data.toDate,
+        currencies: data.currencies,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class ExpensesService {
+  /**
+   * Get Expenses
+   * Retrieve expenses with filtering and pagination.
+   * @param data The data for the request.
+   * @param data.fromDate Start date (YYYY-MM-DD)
+   * @param data.toDate End date (YYYY-MM-DD)
+   * @param data.currencies Currencies to convert to
+   * @param data.category Filter by category
+   * @param data.skip Number of records to skip
+   * @param data.limit Number of records to return
+   * @returns ExpensesPublic Successful Response
+   * @throws ApiError
+   */
+  public static getExpenses(
+    data: ExpensesGetExpensesData,
+  ): CancelablePromise<ExpensesGetExpensesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/expenses/",
+      query: {
+        from_date: data.fromDate,
+        to_date: data.toDate,
+        currencies: data.currencies,
+        category: data.category,
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Expense Summary
+   * Get expense summaries grouped by category or month.
+   * @param data The data for the request.
+   * @param data.fromDate Start date (YYYY-MM-DD)
+   * @param data.toDate End date (YYYY-MM-DD)
+   * @param data.currencies Currencies to convert to
+   * @param data.groupBy Group by 'category' or 'month'
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getExpenseSummary(
+    data: ExpensesGetExpenseSummaryData,
+  ): CancelablePromise<ExpensesGetExpenseSummaryResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/expenses/summary",
+      query: {
+        from_date: data.fromDate,
+        to_date: data.toDate,
+        currencies: data.currencies,
+        group_by: data.groupBy,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class IncomeService {
+  /**
+   * Get Incomes
+   * Retrieve income entries with filtering and pagination.
+   * @param data The data for the request.
+   * @param data.fromDate Start date (YYYY-MM-DD)
+   * @param data.toDate End date (YYYY-MM-DD)
+   * @param data.currencies Currencies to convert to
+   * @param data.origin Filter by origin
+   * @param data.skip Number of records to skip
+   * @param data.limit Number of records to return
+   * @returns IncomesPublic Successful Response
+   * @throws ApiError
+   */
+  public static getIncomes(
+    data: IncomeGetIncomesData,
+  ): CancelablePromise<IncomeGetIncomesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/income/",
+      query: {
+        from_date: data.fromDate,
+        to_date: data.toDate,
+        currencies: data.currencies,
+        origin: data.origin,
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Income Summary
+   * Get income summaries grouped by origin or month.
+   * @param data The data for the request.
+   * @param data.fromDate Start date (YYYY-MM-DD)
+   * @param data.toDate End date (YYYY-MM-DD)
+   * @param data.currencies Currencies to convert to
+   * @param data.groupBy Group by 'origin' or 'month'
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getIncomeSummary(
+    data: IncomeGetIncomeSummaryData,
+  ): CancelablePromise<IncomeGetIncomeSummaryResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/income/summary",
+      query: {
+        from_date: data.fromDate,
+        to_date: data.toDate,
+        currencies: data.currencies,
+        group_by: data.groupBy,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
 
 export class ItemsService {
   /**
@@ -265,6 +434,30 @@ export class LoginService {
       path: {
         email: data.email,
       },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class PrivateService {
+  /**
+   * Create User
+   * Create a new user.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns UserPublic Successful Response
+   * @throws ApiError
+   */
+  public static createUser(
+    data: PrivateCreateUserData,
+  ): CancelablePromise<PrivateCreateUserResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/private/users/",
+      body: data.requestBody,
+      mediaType: "application/json",
       errors: {
         422: "Validation Error",
       },
