@@ -36,6 +36,12 @@ def build_filtered_search(
     if search_filters.origin:
         query = query.where(Income.origin == search_filters.origin)
 
+    if search_filters.account:
+        # Use regex to match the account and all its children
+        # Pattern: account name + any child accounts (account:child1:child2, etc.)
+        account_pattern = f"{search_filters.account}%"
+        query = query.where(Income.account.like(account_pattern))
+
     return query
 
 

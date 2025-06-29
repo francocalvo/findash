@@ -17,16 +17,19 @@ class SearchFilters:
     from_date: date | None = None
     to_date: date | None = None
     origin: str | None = None
+    account: str | None = None
 
     def __init__(
         self,
         from_date: date | None = None,
         to_date: date | None = None,
         origin: str | None = None,
+        account: str | None = None,
     ):
         self.from_date = from_date
         self.to_date = to_date
         self.origin = origin if origin else None
+        self.account = account if account else None
 
 
 class SearchPagination:
