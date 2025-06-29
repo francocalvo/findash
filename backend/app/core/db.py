@@ -4,7 +4,9 @@ from app import crud
 from app.core.config import settings
 from app.models import User, UserCreate
 
-engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+# Convert MultiHostUrl to string properly
+database_url = settings.SQLALCHEMY_DATABASE_URI
+engine = create_engine(database_url.unicode_string())
 
 
 # make sure all SQLModel models are imported (app.models) before initializing DB
