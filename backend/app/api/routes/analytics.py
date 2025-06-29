@@ -7,7 +7,8 @@ from fastapi import APIRouter, Query
 from sqlmodel import func, select
 
 from app.api.deps import SessionDep
-from app.models import Expense, Income
+from app.domains.expenses_transactions.domain.models import Expense
+from app.domains.income_transactions.domain.models import Income
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
@@ -21,7 +22,8 @@ def get_combined_metrics(
         ["USD"], description="Currencies to include in response"
     ),
 ) -> dict[str, Any]:
-    """Get combined income and expense metrics for a period."""
+    """Get combined income and expense metrics for a period.
+    """
     to_date = to_date or datetime.now().date()
 
     # Get totals for all currencies
