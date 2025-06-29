@@ -4,7 +4,8 @@ from typing import Any
 from sqlmodel import Session
 
 from app.ledger import Ledger
-from app.models import Expense, Income
+from app.domains.expenses_transactions.domain.models import Expense
+from app.domains.income_transactions.domain.models import Income
 
 logger = logging.getLogger(__name__)
 
